@@ -1,2 +1,0 @@
-# Binary Parser (Proposal)
-
