@@ -72,7 +72,7 @@ var twoPI:float64 = 2.0 * PI;
 # <a name="1.x"/>1.x SIMD (128bit)
 ```typescript
 let int8_x16:simd128<int8>;
-let int16_x8:simd128<int8>;
+let int16_x8:simd128<int16>;
 let int32_x4:simd128<int32>;
 let int64_x2:simd128<int64>;
 let float32_x4:simd128<float32>;
