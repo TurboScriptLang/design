@@ -28,7 +28,7 @@ Modules are fundamental components of TurboScript. Each TurboScript file is a mo
 
 ```typescript
 // main.tbs
-import {SevenZipReader} from "sevenzip"
+from "sevenzip" import {SevenZipReader} 
 var sevenZipReader:SevenZipReader;
 
 start function main():void{
@@ -50,26 +50,26 @@ Import declarations are used to import entities from other modules and provide b
 
 An import declaration of the form
 ```typescript
-import * as awesome from "./components/awesome-component"
+from "./components/awesome-component" import * as awesome
 ```
 imports the module with the given name and creates a local binding for the module itself. The local binding is classified as a value (representing the module instance) and a namespace (representing a container of types and namespaces).
 
 An import declaration of the form
 ```typescript
-import {_funcName, _className, _varName} from "./module"
+from "./module" import {_funcName, _className, _varName}
 ```
 imports a given module and creates local bindings for a specified list of exported members of the module. The specified names must each reference an entity in the export member set of the given module. The local bindings have the same names and classifications as the entities they represent unless as clauses are used to that specify different local names:
 ```typescript
-import {_funcName as a, _className as b, _varName as c} from "./module"
+from "./module" import {_funcName as a, _className as b, _varName as c}
 ```
 
 An import declaration of the form
 ```typescript
-import awesome from "./components/awesome-component"
+from "./components/awesome-component" import awesome
 ```
 is exactly equivalent to the import declaration
 ```typescript
-import {default as awesome} from "./components/awesome-component"
+from "./components/awesome-component" import {default as awesome}
 ```
 
 # <a name="1.2"/>1.2 Declarations
