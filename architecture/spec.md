@@ -21,12 +21,10 @@ There are some difference between concept of JavaScript and TurboScript. 1) vari
 
 # <a name="2"/>2 Basic Concepts
 
-TurboScript's core concept is to enable hassel free parallel programming using JavaScript like programming language by adding type information on top of JavaScript syntax and few parallel programming related features like shared memory, context sharing workers, SIMD etc... TurboScript may look like TypeScript but it is not fully compatibile with TypeScript, for example TurboScript won't support inheritance instead provide type embdedding from go language. TurboScript also included go insprited feature channel to share data between workers. 
+TurboScript stands for hassel free parallel programming in web using JavaScript dialect with additional type information on top of JavaScript syntax and parallel programming features like shared memory, context sharing workers, SIMD, channels etc... TurboScript may look like TypeScript but it is not TypeScript.
 
 # <a name="3"/>3 Module
-Modules are fundamental components of TurboScript. Each TurboScript file is a module and each TurboScript module can be split in to different wasm modules or combine everything to single wasm module. Worker modules always compiled to separate .wasm modules.
-
-compiler option for this feature is `--bundle=true` or `-b=true` default value is `true`
+Modules are fundamental components of TurboScript. Each TurboScript file is a module and modules can be combined to single wasm module. Worker modules always compiled to separate .wasm modules.
 
 ```typescript
 // main.tbs
@@ -116,6 +114,131 @@ let _int64 = -1l //-number+l represent 64bit unsigned integers
 //Floating point literals
 let _float64 = 1.0 //default floating point number type is float64
 let _float32 = 1.0f //number.fraction+f represent 32bit floating point numbers
+```
+
+# <a name="1.x"/>1.x Interface
+
+An interface specifies properties and method set of an unknown implementation. implementations can be completely isolated, invoking unimplemented methods or properties raise compiler time error.
+
+```typescript
+interface Robot {
+    name:string
+    id:uint32
+    serialNumber:uint32
+
+    wake()
+    eat()
+    sleep()
+    walk()
+    run()
+    reproduce()
+    die()
+}
+```
+# <a name="1.x"/>1.x Class
+
+##### Example 1
+```typescript
+class GenericRobot {
+    
+    name = "GENERIC_ROBOT"
+    id = 1
+
+    constructor(public serialNumber:uint32){
+    }
+
+    wake(){/*implementation*/}
+    eat(){/*implementation*/}
+    sleep(){/*implementation*/}
+    walk(){/*implementation*/}
+    run(){/*implementation*/}
+    reproduce(){/*implementation*/}
+    die(){/*implementation*/}
+}
+
+class Dog extends GenericRobot {
+    name = "DOG"
+    bark(){/*implementation*/}
+}
+
+class Bird extends GenericRobot {
+    name = "BIRD"
+    fly(){/*implementation*/}
+}
+
+function main() {
+    let robots = [
+        new GenericRobot(0),
+        new Dog(1),
+        new Bird(2),
+    ]
+
+    robots.forEach(robot:Robot => {
+        robot.wake();
+        console.log(robot.name);
+        console.log(robot.id);
+        console.log(robot.serialNumber);
+        robot.sleep();
+    });
+}
+```
+
+##### Example 2
+```typescript
+//common.wasm
+class Ray {
+    origin:Vector3D
+    direction:Vector3D
+}
+interface Shape {
+    bbox:Box
+    intersect(r:Ray):HitInfo
+}
+```
+```typescript
+//intersectable.wasm
+class Triangle {
+    bbox:Box
+    points:Vector3D[3]
+    normals:Vector3D[3]
+    textureCoord:Vector2D[3]
+    intersect(r:Ray):HitInfo{/*implementation*/}
+}
+class Cube {
+    bbox:Box
+    min:Vector3D
+    max:Vector3D
+    intersect(r:Ray):HitInfo{/*implementation*/}
+}
+class Sphere {
+    bbox:Box
+    radius:float64
+    center:Vector3D
+    intersect(r:Ray):HitInfo{/*implementation*/}
+}
+```
+
+```typescript
+//intersector.wasm
+function intersect(thing:Shape, ray:Ray):HitInfo {
+    return thing.intersect(ray)
+}
+```
+
+```typescript
+//main.wasm
+declare class Triangle {}
+declare function intersect(thing:Shape, ray:Ray):HitInfo
+
+function main() {
+    let shapes:Shape[] = [
+        new Triangle,
+        new Sphere,
+        new Cube
+    ]
+    let ray = new Ray()
+    shapes.forEach(shape => intersect(shape, r))
+}
 ```
 
 # <a name="1.x"/>1.x Generic Types and Functions
